@@ -2,7 +2,6 @@ package com.example.news_app.view
 
 import ArticleAdapter
 import android.os.Bundle
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView // SearchView eklenmeli
 import com.example.news_app.R
 import com.example.news_app.model.Article
 import com.example.news_app.model.ArticleResponse
@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var articleAdapter: ArticleAdapter? = null
 
+    // Arama metnini tutacak değişken
+    private var searchQuery: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,6 +44,21 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView?.layoutManager = LinearLayoutManager(this)
 
+        val searchView = findViewById<SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Arama düğmesine basıldığında çalışır
+                searchQuery = query ?: ""
+                loadData() // Arama yapılırken verileri güncelle
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Arama metni değiştiğinde çalışır
+                return false
+            }
+        })
+
         loadData()
     }
 
@@ -51,14 +69,18 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val service = retrofit.create(NewsAPI::class.java)
-        val call = service.getData()
-
+        //val call = service.getData()
+        val call = service.getData("bitcoin", "dfa18be16d414df0ba4141615624b195")
         call.enqueue(object : Callback<ArticleResponse> {
             override fun onResponse(call: Call<ArticleResponse>, response: Response<ArticleResponse>) {
                 if (response.isSuccessful) {
                     val articleResponse = response.body()
                     articleResponse?.let {
-                        articles = ArrayList(it.articles)
+                        articles = ArrayList(it.articles.filter { article ->
+                            // Arama metni ile başlık veya içerikte eşleşen makaleleri filtrele
+                            article.title.contains(searchQuery, ignoreCase = true) ||
+                                    article.description?.contains(searchQuery, ignoreCase = true) ?: false
+                        })
                         articleAdapter = ArticleAdapter(this@MainActivity, articles ?: listOf())
                         recyclerView?.adapter = articleAdapter
                     }
