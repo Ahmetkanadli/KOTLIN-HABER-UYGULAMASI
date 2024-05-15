@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val service = retrofit.create(NewsAPI::class.java)
+        // TODO add your Api_Key
         val call = service.getData("$searchQuery", "YOUR_API_KEY")
         call.enqueue(object : Callback<ArticleResponse> {
             override fun onResponse(call: Call<ArticleResponse>, response: Response<ArticleResponse>) {
