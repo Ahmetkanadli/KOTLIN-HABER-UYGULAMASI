@@ -4,7 +4,8 @@ A Kotlin project
 
 ## Getting Started
 
-We need to create an api key by logging in from https://newsapi.org/.
+We need to create an api key by logging in from https://newsapi.org/
+
 API_KEY must be added to the app -> view -> MainActivity field in the project
 
 ## ScreenShots
