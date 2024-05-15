@@ -6,4 +6,18 @@
     </style>
 
     <style name="Theme.News_app" parent="Base.Theme.News_app" />
+
+    <style name="BottomNavigationViewStyle" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@color/white</item> <!-- Önerilen: BottomNavigationView'ın arka plan rengi -->
+    </style>
+
+    <style name="BottomNavigationView.ActiveTextAppearance" parent="@style/TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/black</item> <!-- Aktif metin rengi -->
+    </style>
+
+    <style name="BottomNavigationView.InactiveTextAppearance" parent="@style/TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/black</item> <!-- Pasif metin rengi -->
+    </style>
+
+
 </resources>

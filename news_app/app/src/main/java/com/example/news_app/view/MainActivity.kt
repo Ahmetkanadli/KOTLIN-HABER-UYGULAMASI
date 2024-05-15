@@ -1,6 +1,8 @@
 package com.example.news_app.view
 
 import ArticleAdapter
+import FavoritesDatabaseHelper
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +16,7 @@ import com.example.news_app.R
 import com.example.news_app.model.Article
 import com.example.news_app.model.ArticleResponse
 import com.example.news_app.service.NewsAPI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,8 +32,9 @@ class MainActivity : AppCompatActivity() {
     private var articleAdapter: ArticleAdapter? = null
 
     // Arama metnini tutacak değişken
-    private var searchQuery: String = ""
+    private var searchQuery: String = "bitcoin"
 
+    @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,7 +64,36 @@ class MainActivity : AppCompatActivity() {
         })
 
         loadData()
+
+        val BottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
+        BottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_favorites -> {
+                    println("Fav")
+                    loadFavoriteArticles()
+                    true
+                }
+                R.id.menu_news -> {
+                    println("news")
+                    loadData()
+                    true
+                }
+                else -> false
+            }
+        }
+
+
     }
+    private fun loadFavoriteArticles() {
+        // Veritabanından favori makaleleri al
+        val dbHelper = FavoritesDatabaseHelper(this)
+        val favoriteArticles = dbHelper.getAllFavorites()
+
+        // Alınan favori makaleleri RecyclerView'da göster
+        articleAdapter = ArticleAdapter(this, favoriteArticles)
+        recyclerView?.adapter = articleAdapter
+    }
+
 
     private fun loadData() {
         val retrofit = Retrofit.Builder()
@@ -69,8 +102,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val service = retrofit.create(NewsAPI::class.java)
-        //val call = service.getData()
-        val call = service.getData("bitcoin", "dfa18be16d414df0ba4141615624b195")
+        val call = service.getData("$searchQuery", "YOUR_API_KEY")
         call.enqueue(object : Callback<ArticleResponse> {
             override fun onResponse(call: Call<ArticleResponse>, response: Response<ArticleResponse>) {
                 if (response.isSuccessful) {

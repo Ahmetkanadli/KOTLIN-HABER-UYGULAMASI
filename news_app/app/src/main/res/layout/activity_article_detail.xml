@@ -5,6 +5,30 @@
     android:background="#F2F2F2"
     android:padding="10dp">
 
+    <!-- Favori ve Paylaş ikonları için yeni bir LinearLayout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <!-- Favori ikonu -->
+        <ImageView
+            android:id="@+id/image_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_favorite_grey"
+            android:layout_marginEnd="10dp"/>
+
+        <!-- Paylaş ikonu -->
+        <ImageView
+            android:id="@+id/image_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_share_button"
+            android:layout_marginEnd="10dp"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/text_title"
         android:layout_width="match_parent"
